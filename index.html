@@ -1,0 +1,70 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="imagineighbourhoods.css" />
+</head>
+<body>
+	<div class="neighbourhood">
+		<div id="house1" class="house" onmousedown="clickDrag(this);">
+		</div>
+	</div>
+	<p id="alert">&nbsp;</p>
+<script>
+document.getElementById('house1').ondragstart = function() {return false; }
+function fixPageXY(e) {
+  if (e.pageX == null && e.clientX != null ) 
+  {
+    var html = document.documentElement
+    var body = document.body
+
+    e.pageX = e.clientX + (html.scrollLeft || body && body.scrollLeft || 0)
+    e.pageX -= html.clientLeft || 0
+    e.pageY = e.clientY + (html.scrollTop || body && body.scrollTop || 0)
+    e.pageY -= html.clientTop || 0
+  }
+}
+
+function clickDrag(tag) {
+	tag.style.backgroundcolor = "red";
+  tag.style.position = "absolute";
+ 
+  var self = tag
+  var tagwidth = Number(window.getComputedStyle(tag).width.replace('px',''))
+  var containerwidth= Number(window.getComputedStyle(tag.parentElement).width.replace('px', ''))
+  var offsetLeft = tag.parentElement.offsetLeft
+  var maxX = containerwidth-tagwidth + offsetLeft
+
+  var tagHeight = Number(window.getComputedStyle(tag).height.replace('px',''))
+  var containerHeight= Number(window.getComputedStyle(tag.parentElement).height.replace('px', ''))
+  var offsetTop = tag.parentElement.offsetTop
+  var maxY =  containerHeight - tagHeight + offsetTop
+  
+  document.onmousemove =   	
+  	function(e) {
+		e = e || event
+		document.getElementById("alert").innerHtml = maxX;
+		fixPageXY(e) 
+		var newX = e.pageX-25
+		var newY = e.pageY-25
+		if(maxX < newX)
+			self.style.left = maxX + 'px'
+		else if (newX < tag.parentElement.offsetLeft)
+			self.style.left = tag.parentElement.left + 'px'
+		else
+			self.style.left = newX + 'px'
+		if(maxY < newY) 
+			self.style.top = maxY + 'px'
+		else if(newY < tag.parentElement.offsetTop)
+			self.style.top = tag.parentElement.offsetTop + 'px'
+		else
+			self.style.top = newY + 'px'
+	}
+  this.onmouseup = 
+  	function() {
+  		this.text = ""
+    	document.onmousemove = null
+  	}
+}
+
+</script>
+</body>
+</html>
